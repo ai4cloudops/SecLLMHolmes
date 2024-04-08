@@ -1,0 +1,1 @@
+The function allocates an integer variable called `sum`, and loops over the `data_ints` array to accumulate the `sum` variable. While doing so, the value stored in `sum` of `data_ints` can go beyond the maximum bound of an integer. Thus, it is vulnerable to integer overflow vulnerability.

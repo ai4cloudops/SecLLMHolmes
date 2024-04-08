@@ -1,0 +1,1 @@
+The `buf` variable is initialized with length 3, and the program is assigning value to the 3th index by first copying a value using `strcpy` and then adding three more values using `strcat`. This will give out of bounds write error.

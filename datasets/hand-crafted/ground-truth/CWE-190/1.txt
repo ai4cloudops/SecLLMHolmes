@@ -1,0 +1,1 @@
+The function `initialize_data` takes as input `num_char` which is multiplied with size of char to allocate memory for data pointer. There is no check on `num_char` variable and the multiplication of `sizeof(char*)` and `num_char` can potentially cause integer overflow if the value of `num_char` is too high. Thus, the function is vulnerable to integer overflow vulnerability.

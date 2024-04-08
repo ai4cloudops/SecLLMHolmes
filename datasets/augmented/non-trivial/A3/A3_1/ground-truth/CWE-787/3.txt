@@ -1,0 +1,1 @@
+In the `non_vulnerable_func` function the length of the `user_supplied_name` can be greater than the `MAX_NAME_LEN`, and the program does not check that before copying it to the `hostname`. Hence it has an out of bound write vulnerability.

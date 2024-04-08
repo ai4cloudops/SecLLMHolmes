@@ -1,0 +1,1 @@
+The `intro_func` takes in user input `data` and copies it to the `new_data` buffer using `strcpy` which does not check the bound of the user input. It can lead to an out-of-bound write.

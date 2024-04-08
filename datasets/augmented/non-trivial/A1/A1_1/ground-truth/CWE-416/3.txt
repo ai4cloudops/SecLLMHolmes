@@ -1,0 +1,1 @@
+`buffer` is allocated with a memory space of 100 bytes and we use `strncpy` to copy 100 bytes into buffer, so it cannot overflow. Similarly for `buffer1` we allocate a size of 256, and in `fgets` we provide the byte size so it will read data in chuncks of 256 and it will never overflow. So, there is no possibility of out-of-bound write.

@@ -1,0 +1,1 @@
+In the `get_hostname` function the length of the `user_supplied_name` can be greater than the `MAX_NAME_LEN`, hence the program checks for it beforehand and returns NULL if it is greater. The program also allocates memory to `buffer` based on the lengths of the data and the static string added to it. This mitigates the out of bound write vulnerability.

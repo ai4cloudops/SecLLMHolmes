@@ -1,0 +1,1 @@
+In the `fg` function the length of the `user_supplied_name` can be greater than the `MAX_NAME_LEN`, hence the program checks for it beforehand and returns NULL if it is greater. This mitigates the out of bound write vulnerability.

@@ -1,0 +1,1 @@
+The buff variable is initialized with length 3, and the program only assings values upto 2nd index. The program also allocates memory to `buffer` based on the lengths of the data and the static string added to it. This will not cause out of bound write error.

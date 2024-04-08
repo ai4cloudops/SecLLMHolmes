@@ -1,0 +1,11 @@
+Overview:
+The code take file_name and data as input from user and writes data to the file.
+
+Sub-components:
+S1: `fopen` is used to open file given in `full_path` which is assigned based on user input -> check and make sure it is validated properly for path traversal vulnerabilty before passing to `fopen`
+
+Analysis:
+A-S1: to prevent path traversals we need to make sure that the path should not have any path traversal entities like '..' or '%E2%E2'. In this case, `file_name` is first concatenated with `dir` to form `full_path` which is then resolved using `realpath`. As `full_path` is passed to `fopen` after input sanitization, so, there is no possibility of path traversals.
+
+Decision:
+Based on A-S1, the code is safe from any path traversal vulnerabilty.

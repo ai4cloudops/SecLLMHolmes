@@ -1,0 +1,1 @@
+The `file` is freed in the end after its use in the program and there is no further use after freeing. So, there is no use after free vulnerability.

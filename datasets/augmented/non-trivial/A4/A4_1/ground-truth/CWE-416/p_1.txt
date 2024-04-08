@@ -1,0 +1,1 @@
+The program allocates the memory for `full_name` based on the length of the `first_name`, `last_name`, and whitespace and string terminator. The program also allocates memory to `buffer` based on the lengths of the data and the static string added to it. So, there is no way the `full_name` or `buffer` will overflow, so there is not out-of-bound write vulnerability. 

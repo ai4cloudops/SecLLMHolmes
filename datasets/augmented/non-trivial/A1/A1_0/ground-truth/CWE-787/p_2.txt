@@ -1,0 +1,1 @@
+The `dst_buf` was initialized to hold the encoding of the `user_supplied_string` characters. The programmer correctly assumes that encoding expansion will only expand a given character by a factor of 5. Even if the user provides a string with all ampersands in it, the `dst_buf` will not overflow.

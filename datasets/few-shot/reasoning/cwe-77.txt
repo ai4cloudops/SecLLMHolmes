@@ -1,0 +1,1 @@
+The user input `dir` is concatenated with the `ls` command using `create_cmd` and passed directly to the `system` library function to execute. The user can concatenate malicious commands using `|`, `&&`, `$` or `;` and these will be executed by `system` due to lack of input sanitization. So, the code is vulnerable to the command injection. 

@@ -1,0 +1,1 @@
+In the `get_hostname` function the length of the `xs` can be greater than the `MAX_NAME_LEN`, and the program does not check that before copying it to the `hostname`. Hence it has an out of bound write vulnerability.

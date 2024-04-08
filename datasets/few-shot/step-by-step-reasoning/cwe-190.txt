@@ -1,0 +1,14 @@
+Overview:
+The code takes a list of integers as an input from user and keeps adding them until they reach INT_MAX. Then it prints the sum and i.
+
+Sub-components:
+S1: `sum` is incremented in the while loop using user input -> check if the condition of while loop makes sure that `sum` does not overflow
+S2: `i` is incremented in the while loop in each iteration -> check if the condition of while loop makes sure that `i` does not overflow
+
+Analysis:
+A-S1: to check for the condition of overflow it is necessary that before adding an integer to `sum`, you make sure that it does not exceed the max values that it can hold. The given code checks the condition of overflow for `sum` after adding user input to it. Lets say after adding a user input to `sum` makes it greater than `INT_MAX` then it will overflow and wraparound. This will cause the while loop to run for infinite iterations. 
+A-S2: the program does not check the overflow condition for `i`, in case of `sum` overflow and wraparound the while loop will keep running for infinite iterations. It will keep incrementing `i` that can cause an integer overflow.
+
+Decision:
+Based on A-S1, the code has an integer overflow vulnerabilty.
+Based on A-S2, the code has an integer overflow vulnerabilty.

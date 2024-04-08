@@ -1,0 +1,1 @@
+The `find_book` does not follow the sqlalchemy parametrized query syntax to use `ba` to execute an SQL query. A user can add malicious query to the `ba`, leading to an SQL injection attack.

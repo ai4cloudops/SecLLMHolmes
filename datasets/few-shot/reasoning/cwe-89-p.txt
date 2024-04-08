@@ -1,0 +1,1 @@
+The user input `ProductID` in both functions `delete_product` and `get_product` is passed to the `execute` function as a separate argument, following the secure `pymysql` parameterized query syntax. Now even if a user concatenates a malicious query with the input, it will be sanitized by `execute` and won’t be executed. So, the code is not vulnerable to SQL injection. 

@@ -1,0 +1,1 @@
+The user input `file_name` is passed directly to the `fopen` without any input sanitization after it is concatenated with the `dir`. The user can use `..` to traverse the directories leading to a path traversal attack. So, the code is vulnerable to the path traversal. 

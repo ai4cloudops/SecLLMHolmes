@@ -1,0 +1,1 @@
+The `uj` is concatenated to the SQL statement and passed to `execute` function without following the sqlite3 parametrized query syntax for using user defined inputs. A user can add malicious query to the `uj`, leading to an SQL injection attack.

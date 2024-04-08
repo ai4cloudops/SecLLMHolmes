@@ -1,0 +1,1 @@
+The code takes in a list of file names and concatenate them with `cat` command in `cmd_files` function. After concatenating it validates the command for ‘;’, ‘|’, ‘$’ and ‘&&’ in `validate_cmd` to prevent command injection. Then it returns the command to `main` where it is executed by `system`. The input sanitization protects it against any command injection attack.

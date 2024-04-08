@@ -1,0 +1,1 @@
+There is no usage of the `full_name` after its memory is freed, thus the program doesn’t have use after free vulnerability.

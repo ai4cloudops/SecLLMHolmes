@@ -1,0 +1,11 @@
+Overview:
+The code creates a Blueprint for `classes` and upon a POST request from user with `class_code` it calls `find_classes` which then calls `class_seats` to find the number of available seats in that class by quering the `classes.db`.
+
+Sub-component:
+S1: the `find_classes` returns the `output` to the browser, that is returned by `class_seats` and contains the `class_code` in it i.e., provided by user -> check if the user provided class code is properly sanitized or escaped before returning to the browser
+
+Analysis:
+A-S1: `class_code` from user is passed to the `class_seats` and after using it to execute the SQL query, it was sanitized by `escape` and added to the output using `format`. Then it was returned to the `find_class`, which in turn returned it to the web page. As, the user input was sanitized before returning it to the web page, this cannot cause a cross-site scripting attack.
+
+Decision:
+Based on A-S1, the code is safe from the cross-site scripting.

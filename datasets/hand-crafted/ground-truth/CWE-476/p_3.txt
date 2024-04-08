@@ -1,0 +1,1 @@
+The code validates the return value of `validate_hostname` function and other pointers for NULL pointer, and is not vulnerable to null pointer dereference.

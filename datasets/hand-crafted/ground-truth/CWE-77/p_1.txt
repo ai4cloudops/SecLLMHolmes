@@ -1,0 +1,1 @@
+The user input `dir` is first validated for “;”, “|”, “$” or “&&” which could lead to a command injection. Then it is checked for the `CMD_MAX` length, concatenated to `ls` command, and passed to `system`. The input sanitization will protect against any command injection attack.

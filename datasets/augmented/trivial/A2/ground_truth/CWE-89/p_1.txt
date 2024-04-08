@@ -1,0 +1,1 @@
+The `user_input` is passed to `execute` function following the sqlite3 parametrized query syntax for using user defined inputs. Now even a user adds a malicious query to the `user_input`, `execute` function will sanitize it, and will prevent an SQL injection attack.

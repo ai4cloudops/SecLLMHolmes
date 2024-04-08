@@ -1,0 +1,1 @@
+The code sanitizes the `dir` environment variable by using `realpath` but it does not sanitize the user input `file_name`, which is concatenated to `dir` and passed to `fopen`. If a user uses path traversal entities like “..” or “%E2%E2” in `file_name`, it can cause a path traversal attack.

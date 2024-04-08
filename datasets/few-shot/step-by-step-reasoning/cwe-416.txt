@@ -1,0 +1,11 @@
+Overview:
+The code takes a list and the number of input words from user and concatenates them. It also stops concatenating if it finds given bad words in it. At the end it prints the data without bad words.
+
+Sub-components:
+S1: `data` is freed in `data_operation` as well as `print_data` function -> check if `data` was used after it was freed causing a use after free vulnerability
+
+Analysis:
+A-S1: in `data_operation` in second for loop, if a user input contains any bad words it frees the `data` memory and breaks the loop. Then after for loop the function `print_data` is called that prints `data` and frees it again. That'll lead to a free after use vulnerability
+
+Decison:
+Based on A-S1, the code is not safe from use-after-free vulnerability.

@@ -1,0 +1,1 @@
+The user input `dir` is checked for the `CMD_MAX` length and then concatenated with `ls` command and passed directly to `system` without any input sanitization. A user can add “;”, “|”, “$” or “&&” to inject malicious commands to `dir` which will be executed by `system`, causing a command injection attack.

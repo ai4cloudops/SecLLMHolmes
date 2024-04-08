@@ -1,0 +1,1 @@
+The function uses the `full_name` after it is freed in `printf` statement which leads to a use after free vulnerability.

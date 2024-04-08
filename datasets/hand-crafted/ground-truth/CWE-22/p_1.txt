@@ -1,0 +1,1 @@
+The user-provided `file_name` is first checked for allowed characters and the presence of “..”, so if there is any traversal entity like “..” or “%E2%E2” it will return an invalid path. As `file_name` is first sanitized, then concatenated with `dir` and passed to the `fopen`, it prevents a path traversal attack.

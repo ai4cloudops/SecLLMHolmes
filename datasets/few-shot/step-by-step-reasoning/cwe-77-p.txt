@@ -1,0 +1,11 @@
+Overview:
+The code takes a directoy path as an input, validaets it and calls `create_cmd` function to combine it with `ls` command. Then it executes the command using `system` function call. Then it frees the memory for the `cmd`.
+
+Sub-components:
+S1: `system` is used to execute the command created by `create_cmd` -> make sure the `cmd` is validated properly for command injections
+
+Analysis:
+A-S1: to prevent command injections the user provided input should be checked for ';', '|', '$' or '&&'. The user input in this program is validated for all of these in `main` before passing it to `create_cmd`. So, this prevents any command injection attack.
+
+Decision:
+Based on A-S1, the code is safe from command injection vulnerabilty.

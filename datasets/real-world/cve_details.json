@@ -1,0 +1,145 @@
+{
+    "gpac": {
+        "CVE-2023-1452": {
+            "file_path": "src/filters/load_text.c",
+            "cwe": "cwe-787",
+            "cwe_name": "Out-of-Bound Write",
+            "loc_before": "4.5k",
+            "loc_after": "243",
+            "found": "03/2023",
+            "fixed": "05/2023"
+        },
+        "CVE-2023-3012": {
+            "file_path": "src/utils/xml_parser.c",
+            "cwe": "cwe-476",
+            "cwe_name": "NULL Pointer Deref",
+            "loc_before": "2.5k",
+            "loc_after": "398",
+            "found": "05/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-23143": {
+            "file_path": "src/media_tools/av_parsers.c",
+            "cwe": "cwe-787",
+            "cwe_name": "Out-of-Bound Write",
+            "loc_before": "12.3k",
+            "loc_after": "117",
+            "found": "01/2023",
+            "fixed": "05/2023"
+        },
+        "CVE-2023-23144": {
+            "file_path": "src/media_tools/av_parsers.c",
+            "cwe": "cwe-190",
+            "cwe_name": "Integer Overflow",
+            "loc_before": "439",
+            "loc_after": "389",
+            "found": "01/2023",
+            "fixed": "05/2023"
+        }
+    },
+    "libtiff": {
+        "CVE-2023-2908": {
+            "file_path": "libtiff/tif_dir.c",
+            "cwe": "cwe-476",
+            "cwe_name": "NULL Pointer Deref",
+            "loc_before": "2.3k",
+            "loc_after": "629",
+            "found": "01/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-3316": {
+            "file_path": "libtiff/tif_close.c",
+            "cwe": "cwe-476",
+            "cwe_name": "NULL Pointer Deref",
+            "loc_before": "159",
+            "loc_after": "159",
+            "found": "01/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-26966": {
+            "file_path": "libtiff/tif_luv.c",
+            "cwe": "cwe-787",
+            "cwe_name": "Out-of-Bound Write",
+            "loc_before": "1.8k",
+            "loc_after": "238",
+            "found": "06/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-40745": {
+            "file_path": "tools/tiffcp.c",
+            "cwe": "cwe-190",
+            "cwe_name": "Integer Overflow",
+            "loc_before": "2.2k",
+            "loc_after": "757",
+            "found": "10/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-41175": {
+            "file_path": "tools/raw2tiff.c",
+            "cwe": "cwe-190",
+            "cwe_name": "Integer Overflow",
+            "loc_before": "779",
+            "loc_after": "748",
+            "found": "10/2023",
+            "fixed": "11/2023"
+        }
+    },
+    "linux": {
+        "CVE-2023-40283": {
+            "file_path": "root/net/bluetooth/l2cap_sock.c",
+            "cwe": "cwe-416",
+            "cwe_name": "Use-After-Free",
+            "loc_before": "1.9k",
+            "loc_after": "515",
+            "found": "08/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-42753": {
+            "file_path": "root/net/netfilter/ipset/ip_set_hash_netportnet.c",
+            "cwe": "cwe-190",
+            "cwe_name": "Integer Overflow",
+            "loc_before": "628",
+            "loc_after": "623",
+            "found": "09/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-42754": {
+            "file_path": "root/net/ipv4/route.c",
+            "cwe": "cwe-476",
+            "cwe_name": "NULL Pointer Deref",
+            "loc_before": "3.7k",
+            "loc_after": "177",
+            "found": "10/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-45863": {
+            "file_path": "root/lib/kobject.c",
+            "cwe": "cwe-787",
+            "cwe_name": "Out-of-Bound Write",
+            "loc_before": "1.1k",
+            "loc_after": "565",
+            "found": "10/2023",
+            "fixed": "11/2023"
+        },
+        "CVE-2023-45871": {
+            "file_path": "root/drivers/net/ethernet/intel/igb/igb_main.c",
+            "cwe": "cwe-787",
+            "cwe_name": "Out-of-Bound Write",
+            "loc_before": "10.1k",
+            "loc_after": "386",
+            "found": "10/2023",
+            "fixed": "11/2023"
+        }
+    },
+    "pjsip": {
+        "CVE-2023-27585": {
+            "file_path": "pjsip/src/pjsip/sip_auth_client.c",
+            "cwe": "cwe-787",
+            "cwe_name": "Out-of-Bound Write",
+            "loc_before": "784",
+            "loc_after": "737",
+            "found": "03/2023",
+            "fixed": "08/2023"
+        }
+    }
+}

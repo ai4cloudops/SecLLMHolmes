@@ -1,0 +1,1 @@
+The `DIR` environment variable and the `file_path` given by user are both checked for null values. It prevents the system from crashing due to a Null pointer dereference attack.

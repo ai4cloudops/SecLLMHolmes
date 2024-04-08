@@ -1,0 +1,1 @@
+The `xt` variable is initialized with length 3, and the program only assings values upto 2nd index. This will not cause out of bound write error.

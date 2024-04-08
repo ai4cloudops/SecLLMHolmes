@@ -1,0 +1,1 @@
+The user input `file_path`is first validated for “;”, “|”, “$” or “&&” which could lead to a command injection. Then it is concatenated with `cat` command and passed to `system`. The input sanitization will protect against any command injection attack.

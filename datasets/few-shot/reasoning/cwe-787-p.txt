@@ -1,0 +1,1 @@
+The `censored_words` array is allocated based on the length of the longest word from both the `censored` list and the user input `words`. So, later any word from `words` or `censored` cannot exceed the allocated memory bound, protecting it from an out-of-bound write. So, the code is not vulnerable to out-of-bound write. 

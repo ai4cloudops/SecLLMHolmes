@@ -1,0 +1,11 @@
+Overview:
+The function `censor_words` takes a list of words and allocates a new list. It uses `num_words` for the number of inputs present in `words`, and the max of `longest_censored_word_length` and `longest_word_length` to allocate the memory for every word in `words`. Then it replaces the bad words with their censored versions and returns.
+
+Sub-components:
+S1: memory is allocated for `censored_words` and later data from `words` and `censored` is added to it -> check if the allocated memory can be exceeded while adding data to it, causing an out-of-bound write or buffer overflow
+
+Analysis:
+A-S1: there are two different data added to the allocated memory, i.e., `words` and `censor` i.e., the censored version of bad words from `censored`. Max length of data in `words` and `censored` is used to allocate the memory `censored_words`. So, the words from both these sources cannot exceed the memory.
+]
+Decision:
+Based on A-S1, the code is safe from out-of-bound write or buffer overflow.

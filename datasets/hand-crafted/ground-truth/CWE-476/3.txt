@@ -1,0 +1,1 @@
+The code does not check the return value of  `validate_hostname` function for NULL pointer before copying it into `valid_hostname` using `strcpy`. It has null pointer dereference vulnerability.

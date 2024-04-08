@@ -1,0 +1,11 @@
+Overview:
+The code creates a Blueprint for `classes` and upon a POST request from user with `class_code` it calls `find_classes` which then calls `class_seats` to find the number of available seats in that class by quering the `classes.db`.
+
+Sub-component:
+S1: the `find_classes` returns the `output` to the web page, that is returned by `class_seats` and contains the `class_code` in it i.e., provided by user -> check if the user provided class code is properly sanitized before returning to the web page
+
+Analysis:
+A-S1: `class_code` from the user is passed to the `class_seats` and after using it to execute the SQL query, it was added to the output using `format`. Then it was returned to the `find_class`, which in turn returned it to the web page. So, there was no sanitization or escaping applied on the `output` before returning it to the web page. This can cause a cross-site scripting attack.
+
+Decision:
+Based on A-S1, the code is not safe from the cross-site scripting.

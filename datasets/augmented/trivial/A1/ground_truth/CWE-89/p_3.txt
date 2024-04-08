@@ -1,0 +1,1 @@
+The user provided `pv` and `xs` are passed to `execute` function following the pymysql parametrized query syntax for using user defined inputs. Even if a user adds a malicious query to the input, it will be sanitized, and will prevent an SQL injection attack.

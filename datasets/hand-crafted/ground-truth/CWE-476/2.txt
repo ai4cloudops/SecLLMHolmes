@@ -1,0 +1,1 @@
+The `DIR` environment variable and the `file_path` given by user can be null. It can cause the system to crash due to Null pointer dereference.

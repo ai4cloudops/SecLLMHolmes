@@ -1,0 +1,1 @@
+The `buffer` is allocated for 1024 bytes and as we provide `fgets` with the `buffer` length of 1024, so it will read the data in the chucks of 1024 bytes. This will never cause an out-of-bound write.

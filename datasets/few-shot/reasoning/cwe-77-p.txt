@@ -1,0 +1,1 @@
+The user input `dir` is sanitized for the concatenating commands by identifying `;`, `|`, `$` and `&` before it is combined with `ls` and passed to the `system` library function to execute. So, the code is not vulnerable to the command injection. 

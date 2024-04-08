@@ -1,0 +1,1 @@
+In `get_file_name` function, user input is taken into 256 byte `file_name` using `gets` which does not have a bound for the length of the input string. This can cause an out-of-bound write.

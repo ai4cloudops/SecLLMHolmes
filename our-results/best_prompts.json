@@ -1,0 +1,74 @@
+{
+    "chat-bison@001": {
+        "FR": "promptS6",
+        "FS": "promptS6",
+        "FT": "promptS5",
+        "ZR": "promptSS2",
+        "ZS": "promptSS2",
+        "ZT": "promptS1",
+        "best": "promptS6"
+    },
+    "codechat-bison@001": {
+        "FR": "promptSS4",
+        "FS": "promptSS4",
+        "FT": "promptSS6",
+        "ZR": "promptSS2",
+        "ZS": "promptSS2",
+        "ZT": "promptS1",
+        "best": "promptSS2"
+    },
+    "codellama13b": {
+        "FR": "promptD3",
+        "FS": "promptS5",
+        "FT": "promptS5",
+        "ZR": "promptS3",
+        "ZS": "promptS1",
+        "ZT": "promptS1",
+        "best": "promptS5"
+    },
+    "codellama34b": {
+        "FR": "promptD3",
+        "FS": "promptS5",
+        "FT": "promptS5",
+        "ZR": "promptD2",
+        "ZS": "promptS1",
+        "ZT": "promptS1",
+        "best": "promptS1"
+    },
+    "codellama7b": {
+        "FR": "promptD4",
+        "FS": "promptD4",
+        "FT": "promptD5",
+        "ZR": "promptD2",
+        "ZS": "promptD2",
+        "ZT": "promptSS1",
+        "best": "promptD4"
+    },
+    "gpt-3.5-turbo-16k": {
+        "FR": "promptSS4",
+        "FS": "promptSS4",
+        "FT": "promptSS6",
+        "ZR": "promptSS2",
+        "ZS": "promptSS2",
+        "ZT": "promptSS1",
+        "best": "promptSS4"
+    },
+    "gpt-4": {
+        "FR": "promptSS5",
+        "FS": "promptSS6",
+        "FT": "promptSS6",
+        "ZR": "promptSS2",
+        "ZS": "promptSS2",
+        "ZT": "promptD1",
+        "best": "promptSS6"
+    },
+    "starchat-beta": {
+        "FR": "promptD3",
+        "FS": "promptD3",
+        "FT": "promptD5",
+        "ZR": "promptD2",
+        "ZS": "promptD2",
+        "ZT": "promptS1",
+        "best": "promptD3"
+    }
+}

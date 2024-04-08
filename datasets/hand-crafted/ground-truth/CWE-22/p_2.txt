@@ -1,0 +1,1 @@
+The code concatenates the environment variable `dir` and user input `file_name` and sanitizes the complete `path` by using `realpath`, before passing it to the `fopen`. This prevents the path traversal attack. 

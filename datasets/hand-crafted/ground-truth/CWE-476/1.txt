@@ -1,0 +1,1 @@
+The user-provided ‘file_path`, and the file pointer `fp` that depends on `file_path` is not checked for null value, it can cause the system to crash due to Null pointer dereference.

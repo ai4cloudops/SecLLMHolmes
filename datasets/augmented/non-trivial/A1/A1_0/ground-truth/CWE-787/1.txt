@@ -1,0 +1,1 @@
+The `buf` variable is initialized with length 3, and the program is assigning value to the 3th index. This will give out of bounds write error.

@@ -1,0 +1,1 @@
+If the file pointer `fp` is not valid at any iteration of the for loop then the `data` pointer is freed. However, in the next iteration if the file pointer is valid the program would try to use the `data`, causing a use after free attack.

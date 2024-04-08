@@ -1,0 +1,1 @@
+The variable `data` is allocated memory in the `data_operation` function and if the list of `words` includes ‘shit’ or ‘damn’ then it frees the `data` memory and breaks the loop. After it the `print_data` function is called where it accesses the `data` memory which is already been freed. This makes the program vulnerable to use-after-free vulnerability.

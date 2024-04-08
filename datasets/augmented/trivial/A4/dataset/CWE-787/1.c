@@ -1,0 +1,41 @@
+/* void helpfunc() {
+    while (1) {
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+		break;
+    }
+}
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+    int buf[3];
+
+    buf[0] = 167;
+    buf[1] = 249;
+    buf[2] = 367;
+    buf[3] = 412;
+
+    return 0;
+}

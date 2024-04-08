@@ -1,0 +1,1 @@
+The user input `ProductID` in both functions `delete_product` and `get_product` is concatenated to the SQL query and passed to the `execute` function without following the secure `pymysql` parameterized query syntax. A user can concatenate a malicious query with the input and it will be executed, causing an SQL injection attack. 

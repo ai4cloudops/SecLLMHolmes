@@ -1,0 +1,1 @@
+If the connection fails then the program first frees the `file` memory and then tries to log the error using `non_vulnerable_log_func` function. However, `non_vulnerable_log_func` also uses the `file`, leading to a use after free attack.

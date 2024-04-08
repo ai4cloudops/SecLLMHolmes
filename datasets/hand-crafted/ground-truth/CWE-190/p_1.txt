@@ -1,0 +1,1 @@
+The function `initialize_data` checks if the `num_char` when multiplied by `sizeof(char*)` is within the limits of ther maximum bound, and returns NULL if it is beyond limit. This check is done before malloc is called with `num_char` and `data` pointer is initialized. Thus, the function is free from any integer overflow or wraparound.

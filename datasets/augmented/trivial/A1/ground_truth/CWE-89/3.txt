@@ -1,0 +1,1 @@
+The user provided `zb` and `mc` are concatenated to the SQL statement in `createQuery` and passed to `execute` function without following the pymysql parametrized query syntax for using user defined inputs. A user can add malicious query to the input, leading to an SQL injection attack.

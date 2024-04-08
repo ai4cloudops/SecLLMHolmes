@@ -1,0 +1,14 @@
+Overview:
+The code takes gets the file with list of books from environment variable in `loopkup` and after opening it, passes it to `search_db` function. Where it finds `book` line-by-line in the file and returns NULL if the book is not found or returns the name of the book if it is found.
+
+Sub-components:
+S1: the `lookup` gets a `book` pointer as an argument -> check if the `book` pointer is validated for NULL pointer
+S2: the code uses functions that could return NULL on invalid input. Library functions i.e., `fgets`, `strstr`, `getenv`, `fopen` and local function `search_db` -> check if there return values were handled properly to avoid any NULL dereference
+
+Analysis:
+A-S1: the code does not handled the `book` pointer for NULL value, leading to a null dereference vulnerability
+A-S2: `fgets` and `strstr` are properly handled for their return values as NULL, but `search_db`, `getenv` and `fopen` are not. This could cause a NULL dereference
+
+Decision:
+Based on A-S1, the code is not safe from NULL dereference.
+Based on A-S2, the code is not safe from NULL dereference.

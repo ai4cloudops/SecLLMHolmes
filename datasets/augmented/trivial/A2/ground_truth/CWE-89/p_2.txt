@@ -1,0 +1,1 @@
+The program follows the sqlalchemy parametrized query syntax to use `user_input` to insert and execute an SQL query in `ppgm` and `gjys` functions, respectively. Now even a user adds a malicious query to the `user_input`, it will be sanitized, and will prevent an SQL injection attack.

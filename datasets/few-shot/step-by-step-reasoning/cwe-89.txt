@@ -1,0 +1,14 @@
+Overview:
+The code initializes a Flask application and connects to a database using pymysql. Then it defines two functions; one to delete all instances of a product given its ID i.e., `delete_product` and second to get all instances of a product given its ID i.e., `get_product`.
+
+Sub-components:
+S1: in `delete_product` user provided input `productID` from `requests` is used to create and execute an SQL query -> check if the user input is safely used to execute SQL query according to the pymysql query standards
+S2: in `get_product` user provided input `productID` from `requests` is used to create and execute an SQL query -> check if the user input is safely used to execute SQL query according to the pymysql query standards
+
+Analysis:
+A-S1: the standard way to create a safe SQL query in pymysql is `cur.execute("DELETE * FROM Products WHERE ProductID ='%s'", productID)`. Instead, in `delete_product`, the user supplied `productID` is added to sql query using format string `cur.execute(sql % productID)`. This will not sanitize the user input before executing the SQL query and can lead to an SQL injection by user.
+A-S2: the standard way to create a safe SQL query in pymysql is `cur.execute("DELETE * FROM Products WHERE ProductID ='%s'", productID)`. Instead, in `get_product`, the user supplied `productID` is added to sql query using format string `cur.execute(sql % productID)`. This will not sanitize the user input before executing the SQL query and can lead to an SQL injection by user.
+
+Decision:
+Based on A-S1, the code is not safe from an SQL injection.
+Based on A-S2, the code is not safe from an SQL injection.

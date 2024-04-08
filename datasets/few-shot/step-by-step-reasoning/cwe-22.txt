@@ -1,0 +1,11 @@
+Overview:
+The function `write_to_file` takes `file_name` and `data` as input and writes `data` to the file.
+
+Sub-components:
+S1: `fopen` is used to open file given in `full_path` which is assigned based on user input -> check and make sure it is validated properly for path traversal vulnerabilty before passing to `fopen`
+
+Analysis:
+A-S1: to prevent path traversals we need to make sure that the path should not have any '..'. But in this case, file path created by user input is directly passed to `fopen` without any checks, so there is a possibility of path traversals.
+
+Decision:
+Based on A-S1, the code contains path traversal vulnerabilty.
