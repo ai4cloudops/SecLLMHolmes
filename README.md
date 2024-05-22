@@ -1,4 +1,4 @@
-> **Note:** OpenAI deprecated one of the models our pipeline uses to create embeddings, I am working on it and will update it soon.
+> ***Note:*** OpenAI deprecated one of the models our pipeline uses to create embeddings, I am working on it and will update it soon.
 
 # SecLLMHolmes
 
