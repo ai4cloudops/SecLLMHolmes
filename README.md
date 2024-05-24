@@ -1,4 +1,3 @@
-> 🔴 IMPORTANT❗: OpenAI deprecated one of the models our pipeline uses to create embeddings, I am working on it and will update it soon.
 # SecLLMHolmes
 
 SecLLMHolmes is a generalized, fully automated, and scalable framework to systematically evaluate the performance (i.e., ***accuracy*** and ***reasoning*** capabilities) of LLMs for vulnerability detection.
@@ -44,3 +43,5 @@ pip install -r requirements.txt
 ```
 python YOUR-LLM-Adapter.py
 ```
+
+> **Note:** OpenAI deprecated one of the models our pipeline uses to create embeddings, I have replaced it with a new model so there is a possibility of results being slightly different as compared to our study.
