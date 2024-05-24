@@ -630,7 +630,7 @@ class LLMAdapter:
             try:
                 resp = self.gpt_client.embeddings.create(
                     input=[kwargs['reason']],
-                    model="text-similarity-davinci-001"
+                    model="text-embedding-3-large"
                 )
 
                 embedding_a = resp.data[0].embedding
