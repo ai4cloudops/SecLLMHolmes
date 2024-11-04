@@ -1,4 +1,4 @@
-from adapter import LLMAdapter
+from src.adapter import LLMAdapter
 from google.cloud import aiplatform
 from vertexai.preview.language_models import CodeChatModel, ChatModel, InputOutputTextPair
 
