@@ -5,6 +5,7 @@ import numpy as np
 import openai
 from statistics import mode
 from rouge_score import rouge_scorer
+from pydantic import BaseModel, Field
 
 from constants import CWES, LANG, PROMPTS_MAP, load_cwe_definitions
 
@@ -26,6 +27,36 @@ class HelperFunctions:
             text = ' '.join(truncated_words)
             return True, text
         return False, text
+    
+    def call_structured_gpt(self, **kwargs):
+        done, itr = False, 5
+        while not done and itr:
+            try:
+                # Applied fix
+                fix_required = self.fix_edge_cases(kwargs['text'])
+                if fix_required[0]:
+                    text = fix_required[1]
+                gpt_response = self.gpt_client.beta.chat.completions.parse(
+                    model="gpt-4o",
+                    messages=[{"role": "user", "content": kwargs['text']}],
+                    response_format=kwargs['response_format']
+                )
+                done = True
+            except openai.RateLimitError as e:
+                print("Rate limit reached. Waiting for 60 seconds...")
+                time.sleep(60)
+            except openai.APIError as e:
+                print(f"Error in extract_pred {e}")
+                # Applied fix
+                fix_required = self.fix_edge_cases(text)
+                if fix_required[0]:
+                    text = fix_required[1]
+                itr -= 1
+                print("Retrying...")
+        if done:
+            response = gpt_response.choices[0].message.parsed
+            return response
+        return None
 
     def extract_pred(self, **kwargs):
         # return "yes"
@@ -62,6 +93,20 @@ class HelperFunctions:
             response = gpt_response.choices[0].message.content
             pred = response.lower()
             return pred
+        return None
+
+    def extract_structured_pred(self, **kwargs):
+        cwe = kwargs['cwe']
+        content = kwargs['text']
+        q = f"As a final decision or answer, does the text state that the code contains a security vulnerability known as {self.cwes[cwe]}?"
+        text = f'Text: """\n{content}\n"""\n\n{q}'
+
+        class Response(BaseModel):
+            answer: str = Field(..., description="Answer only in 'yes' or 'no' or 'n/a', incase the text does not provide a definite answer")
+
+        response = self.call_structured_gpt(text=text, response_format=Response)
+        if response:
+            return response.answer
         return None
 
     def extract_info(self, **kwargs):
@@ -104,6 +149,22 @@ class HelperFunctions:
             else:
                 reason = response.split('Reason:')[-1][1:]
         return pred, reason
+
+    def extract_structured_info(self, **kwargs):
+        cwe = kwargs['cwe']
+        content = kwargs['text']
+        q = "You are a helpful assistant who extracts answer whether an instance of vulnerability is present or not " \
+            "and its reason 'why' from the given text."
+        text = f'Text: """\n{content}\n"""\n\n{q}'
+
+        class Response(BaseModel):
+            answer: str = Field(..., description=f"As a final decision or answer, does the text state that the code contains a security vulnerability known as {self.cwes[cwe]}? (Answer only in 'yes' or 'no' or 'n/a', incase the text does not provide a definite answer)")
+            reason: str = Field(..., description="Reason described in the text that state 'why' the code does or does not contain a security vulnerability known as {self.cwes[cwe]}. (Describe only in Max 100 words) If the answer is 'n/a' then just write 'n/a' in reason. And if no reason is provided then just write 'n/a' in reason. Write in terms of code, e.g., 'The code/program/function ...'")
+
+        response = self.call_structured_gpt(text=text, response_format=Response)
+        if response:
+            return response.answer, response.reason
+        return None, None
 
     def rouge(self, **kwargs):
         scorer = rouge_scorer.RougeScorer(['rouge1', 'rougeL'], use_stemmer=True)
