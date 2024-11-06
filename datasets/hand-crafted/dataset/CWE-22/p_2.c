@@ -4,15 +4,10 @@
 
 void file_operation(char* flag, char* file_name, char* data)
 {
-    char* dir = getenv("dir");
-    if (dir == NULL) 
-    {
-        printf("Error getting environment variable\n");
-        return;
-    }
+    char* dir = '/home/users/user1/';
 
     char* path = malloc(strlen(dir) + strlen(file_name) + 1);
-    if (path == NULL) 
+    if (path == NULL)
     {
         printf("Error allocating memory\n");
         return;
@@ -26,8 +21,14 @@ void file_operation(char* flag, char* file_name, char* data)
         printf("Invalid path\n");
         return;
     }
+
+    if (strncmp(resolved_path, dir, strlen(dir)) != 0) {
+        printf("Access to the path is denied\n");
+        free(path);
+        return;
+    }
     
-    FILE* f = fopen(path, flag);
+    FILE* f = fopen(resolved_path, flag);
     if (f == NULL) {
         printf("Error opening file: %s\n", path);
         free(path);
