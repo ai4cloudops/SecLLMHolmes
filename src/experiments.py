@@ -135,7 +135,7 @@ class ExperimentRunner:
                     # If do_reason is False then only extract pred
                     if not do_reason and do_extract:
                         if "pred" not in results[prompt][temp][cwe][file][ix]:
-                            pred = self.extract_pred(cwe=cwe, text=results[prompt][temp][cwe][file][ix]["content"])
+                            pred = self.extract_structured_pred(cwe=cwe, text=results[prompt][temp][cwe][file][ix]["content"])
                             if pred == None:
                                 open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                 return
@@ -144,7 +144,7 @@ class ExperimentRunner:
                     # If do_reason is True then extract pred and reason
                     if do_reason:
                         if "pred" not in results[prompt][temp][cwe][file][ix] or "reason" not in results[prompt][temp][cwe][file][ix]:
-                            pred, reason = self.extract_info(cwe=cwe, text=results[prompt][temp][cwe][file][ix]["content"])
+                            pred, reason = self.extract_structured_info(cwe=cwe, text=results[prompt][temp][cwe][file][ix]["content"])
                             if pred == None or reason == None:
                                 open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                 return
@@ -181,7 +181,7 @@ class ExperimentRunner:
                         
                         # 3) Compute gpt evaluation
                         if "gpt_eval" not in results[prompt][temp][cwe][file][ix]:
-                            gpt_eval = self.gpt_eval(reason=results[prompt][temp][cwe][file][ix]["reason"], ground_truth=gt)
+                            gpt_eval = self.gpt_structured_eval(reason=results[prompt][temp][cwe][file][ix]["reason"], ground_truth=gt)
                             if not gpt_eval:
                                 open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                 return
@@ -277,7 +277,7 @@ class ExperimentRunner:
 
                             # Extract info
                             if "pred" not in results[cwe][file][prompt] or "reason" not in results[cwe][file][prompt]:
-                                pred, reason = self.extract_info(cwe=cwe, text=results[cwe][file][prompt]["content"])
+                                pred, reason = self.extract_structured_info(cwe=cwe, text=results[cwe][file][prompt]["content"])
                                 if pred == None or reason == None:
                                     open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                     return
@@ -314,7 +314,7 @@ class ExperimentRunner:
 
                             # 3) Compute gpt evaluation
                             if "gpt_eval" not in results[cwe][file][prompt]:
-                                gpt_eval = self.gpt_eval(reason=results[cwe][file][prompt]["reason"], ground_truth=gt)
+                                gpt_eval = self.gpt_structured_eval(reason=results[cwe][file][prompt]["reason"], ground_truth=gt)
                                 if not gpt_eval:
                                     open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                     return
@@ -442,7 +442,7 @@ class ExperimentRunner:
 
                             # Extract info
                             if "pred" not in results[scenario][A][cwe][file] or "reason" not in results[scenario][A][cwe][file]:
-                                pred, reason = self.extract_info(cwe=cwe, text=results[scenario][A][cwe][file]["content"])
+                                pred, reason = self.extract_structured_info(cwe=cwe, text=results[scenario][A][cwe][file]["content"])
                                 if pred == None or reason == None:
                                     open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                     return
@@ -479,7 +479,7 @@ class ExperimentRunner:
 
                             # 3) Compute gpt evaluation
                             if "gpt_eval" not in results[scenario][A][cwe][file]:
-                                gpt_eval = self.gpt_eval(reason=results[scenario][A][cwe][file]["reason"], ground_truth=gt)
+                                gpt_eval = self.gpt_structured_eval(reason=results[scenario][A][cwe][file]["reason"], ground_truth=gt)
                                 if not gpt_eval:
                                     open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                     return
@@ -637,7 +637,7 @@ class ExperimentRunner:
 
                                 # Extract info
                                 if "pred" not in results[scenario][A][t][cwe][file] or "reason" not in results[scenario][A][t][cwe][file]:
-                                    pred, reason = self.extract_info(cwe=cwe, text=results[scenario][A][t][cwe][file]["content"])
+                                    pred, reason = self.extract_structured_info(cwe=cwe, text=results[scenario][A][t][cwe][file]["content"])
                                     if pred == None or reason == None:
                                         open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                         return
@@ -680,7 +680,7 @@ class ExperimentRunner:
 
                                 # 3) Compute gpt evaluation
                                 if "gpt_eval" not in results[scenario][A][t][cwe][file]:
-                                    gpt_eval = self.gpt_eval(
+                                    gpt_eval = self.gpt_structured_eval(
                                         reason=results[scenario][A][t][cwe][file]["reason"], 
                                         ground_truth=gt
                                     )
@@ -799,7 +799,7 @@ class ExperimentRunner:
 
                         # Extract info
                         if "pred" not in results[project][cve][file][scenario] or "reason" not in results[project][cve][file][scenario]:
-                            pred, reason = self.extract_info(cwe=cve_details[project.lower()][cve]["cwe"], text=results[project][cve][file][scenario]["content"])
+                            pred, reason = self.extract_structured_info(cwe=cve_details[project.lower()][cve]["cwe"], text=results[project][cve][file][scenario]["content"])
                             if pred == None or reason == None:
                                 open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
                                 return
@@ -842,7 +842,7 @@ class ExperimentRunner:
 
                         # 3) Compute gpt evaluation
                         if "gpt_eval" not in results[project][cve][file][scenario]:
-                            gpt_eval = self.gpt_eval(
+                            gpt_eval = self.gpt_structured_eval(
                                 reason=results[project][cve][file][scenario]["reason"], 
                                 ground_truth=gt
                             )

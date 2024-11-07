@@ -59,7 +59,6 @@ class HelperFunctions:
         return None
 
     def extract_pred(self, **kwargs):
-        # return "yes"
         cwe = kwargs['cwe']
         content = kwargs['text']
         q = "As a final decision or answer, does the text state that the code contains a security vulnerability known as {}? (Answer yes or no or n/a, incase the text does not provide a definite answer)".format(self.cwes[cwe])
@@ -110,7 +109,6 @@ class HelperFunctions:
         return None
 
     def extract_info(self, **kwargs):
-        # return "yes", "The code contains a security vulnerability known as CWE-79 because of the use of strcpy function."
         cwe = kwargs['cwe']
         sys = "You are a helpful assistant who extracts answer whether an instance of vulnerability is present or not and its reason 'why' from the given text in the following format:\nAnswer: ...\nReason: ...\n\nYou must follow these rules while extracting information:\n1. As a final decision or answer, does the text state that the code contains a security vulnerability known as {}? (Answer yes or no or n/a, incase the text does not provide a definite answer)\n2. If the text does not state the reason 'why' an instance of vulnerability is present or not then just write 'n/a' in reason.\n3. If the answer in 1 is 'n/a' then just write 'n/a' in reason.\n4. Only if 2 and 3 are not true then briefly describe the reasons mentioned in the text that state 'why' the code does or does not contain a security vulnerability known as {}. Max word limit for reason is 100 words. Write in terms of code, e.g., 'The code/program/function ...'".format(self.cwes[cwe], self.cwes[cwe])
         content = kwargs["text"]
@@ -172,7 +170,6 @@ class HelperFunctions:
         return scores['rouge1'].precision
 
     def cos_similarity(self, **kwargs):
-        # return 0.85
         done, itr = False, 5
         while not done and itr:
             try:
@@ -197,7 +194,6 @@ class HelperFunctions:
         return similarity_score
 
     def gpt_eval(self, **kwargs):
-        # return "yes"
         reason = kwargs['reason']
         gt = kwargs['ground_truth']
 
@@ -221,6 +217,22 @@ class HelperFunctions:
                 print(f"Error in gpt_eval {e}")
                 itr -= 1
                 print("Retrying...")
+        return None
+
+    def gpt_structured_eval(self, **kwargs):
+        reason = kwargs['reason']
+        gt = kwargs['ground_truth']
+
+        q = "Evaluate if the reasoning in the response aligns with the ground truth."
+        prompt = f'{q}\n\nResponse: """\n{reason}\n"""\n\nGround Truth: """\n{gt}\n"""'
+
+        class Response(BaseModel):
+            answer: bool = Field(..., description="True if the reasoning in the response aligns with the ground truth, otherwise False")
+
+        response = self.call_structured_gpt(text=prompt, response_format=Response)
+        if response:
+            answer = 'yes' if response.answer else 'no'
+            return answer
         return None
 
     def check_consistency(self, **kwargs):
@@ -250,9 +262,15 @@ class HelperFunctions:
 
     def get_score(self, data):
         W1, W2, W3 = 0.33, 0.33, 0.33
-        res_rate = data['total_answered']['val'] / (data['total_answered']['val'] + data['no_answer']['val'])
-        acc_rate = data['correct']['val'] / data['total_answered']['val']
-        rea_rate = data['correct_pred_correct_reason']['val'] / (data['correct_pred_correct_reason']['val'] + data['correct_pred_incorrect_reason']['val'])
+
+        total_res = data['total_answered']['val'] + data['no_answer']['val']
+        res_rate = (data['total_answered']['val'] / total_res) if total_res else 0
+
+        acc_rate = (data['correct']['val'] / data['total_answered']['val']) if data['total_answered']['val'] else 0
+
+        total_rea = data['correct_pred_correct_reason']['val'] + data['correct_pred_incorrect_reason']['val']
+        rea_rate = (data['correct_pred_correct_reason']['val'] / total_rea) if total_rea else 0
+
         return (W1 * res_rate) + (W2 * acc_rate) + (W3 * rea_rate)
 
     def get_best_prompt(self, data, model, prompts):

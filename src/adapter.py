@@ -10,15 +10,15 @@ class LLMAdapter(HelperFunctions, PromptTemplates, ExperimentRunner):
         pass
 
     def prepare_prompt(self, **kwargs):
-        return "Can you find the vulnerabilities in this code?"
+        pass
 
     def chat(self, **kwargs):
-        return "It has vulnerabilities."
+        pass
 
 if __name__ == "__main__":
     adapter = LLMAdapter()
     adapter.prepare()
     adapter.run_all(
-        api_key="YOUR_API_KEY",
-        model="YOUR_MODEL_NAME"
+        api_key="<OPENAI_API_KEY>",
+        model="<YOUR_MODEL_NAME>"
     )
