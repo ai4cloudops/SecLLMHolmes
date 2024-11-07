@@ -1,4 +1,4 @@
-from adapter import LLMAdapter
+from src.adapter import LLMAdapter
 import torch
 from transformers import pipeline, AutoTokenizer
 import os

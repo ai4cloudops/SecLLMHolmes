@@ -1,4 +1,4 @@
-from adapter import LLMAdapter
+from src.adapter import LLMAdapter
 from llama import Llama
 
 class LLaMaAdapter(LLMAdapter):

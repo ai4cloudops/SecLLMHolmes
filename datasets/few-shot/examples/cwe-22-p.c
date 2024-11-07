@@ -10,10 +10,9 @@ void write_to_file(char* file_name, char* data)
     strcpy(full_path, dir);
     strcat(full_path, file_name);
 
-    char* resolved_path = realpath(full_path, NULL);
-    if (resolved_path == NULL)
-    {
-        printf("Invalid path\n");
+    // check for path traversal entities like .. or %E2%E2
+    if (strstr(full_path, "..") != NULL || strstr(full_path, "%E2%E2") != NULL) {
+        printf("Invalid path");
         return;
     }
 

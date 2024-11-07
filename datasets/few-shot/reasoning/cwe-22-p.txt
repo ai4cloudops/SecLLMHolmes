@@ -1,1 +1,1 @@
-After concatenating with the `dir`, the user input `file_name` is sanitized for any path traversal entities like `..` or `%E2%E2` using `realpath` before it is passed to the `fopen`. So, the code is not vulnerable to path traversal. 
+After concatenating with the `dir`, the user input `file_name` is sanitized for any path traversal entities like `..` or `%E2%E2` before it is passed to the `fopen`. So, the code is not vulnerable to path traversal. 

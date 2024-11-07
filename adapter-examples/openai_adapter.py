@@ -1,6 +1,6 @@
 import openai, time
 from openai import OpenAI
-from adapter import LLMAdapter
+from src.adapter import LLMAdapter
 
 class GPTAdapter(LLMAdapter):
     def __init__(self, temp=0.0):
