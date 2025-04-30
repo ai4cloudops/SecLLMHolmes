@@ -70,5 +70,13 @@
         "ZS": "promptD2",
         "ZT": "promptS1",
         "best": "promptD3"
+    },
+    "gpt-4o-2024-11-20": {
+        "FR": "promptD4",
+        "FS": "promptD4",
+        "FT": "promptR6",
+        "ZR": "promptR2",
+        "ZS": "promptR1",
+        "ZT": "promptR1"
     }
 }

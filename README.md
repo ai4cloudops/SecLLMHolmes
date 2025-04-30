@@ -60,7 +60,7 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 > **Note:** For need to manually install all packages that are required to run your LLM
-3. Run your adapter, and it will create a `resulta` directory and store all results in it
+3. Run your adapter, and it will create a `results` directory and store all results in it
 ```
 cd src
 python adapter.py

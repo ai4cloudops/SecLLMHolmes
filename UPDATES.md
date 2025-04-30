@@ -1,3 +1,7 @@
+# New
+1. Add evaluation scripts
+2. Benchmarking scripts
+
 # Nov 6, 2024
 1. Restructed the code for the SecLLMHolmes framework to allow maximum compatibility with other projects
 2. Replaced GPT-4 with GPT-4o for both extracting information from LLM's responses and evaluating reasonings
