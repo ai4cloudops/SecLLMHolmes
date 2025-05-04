@@ -18,7 +18,11 @@ class LLMAdapter(HelperFunctions, PromptTemplates, ExperimentRunner):
 if __name__ == "__main__":
     adapter = LLMAdapter()
     adapter.prepare()
-    adapter.run_all(
+    # adapter.run_all(
+    #     api_key="<OPENAI_API_KEY>",
+    #     model="<YOUR_MODEL_NAME>"
+    # )
+    adapter.run_benchmark(
         api_key="<OPENAI_API_KEY>",
         model="<YOUR_MODEL_NAME>"
     )

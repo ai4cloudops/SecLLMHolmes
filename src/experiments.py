@@ -226,6 +226,8 @@ class ExperimentRunner:
                     },
                     ...
                 },
+                ...
+            }
         '''
         self.gpt_client = OpenAI(api_key=kwargs['api_key'])
         self.temp = kwargs['temp']
@@ -563,7 +565,7 @@ class ExperimentRunner:
             },
             "A4": {
                 "cwe-787": "cwe-787",
-                "cwe-416": "cwe-787"
+                "cwe-416": "cwe-416",
             },
             "A5": {
                 "cwe-787": "cwe-787",
@@ -572,7 +574,7 @@ class ExperimentRunner:
             },
             "A6": {
                 "cwe-787": "cwe-787",
-                "cwe-22": "cwe-787",
+                "cwe-22": "cwe-22",
                 "cwe-77": "cwe-77"
             }
         }
@@ -1045,4 +1047,580 @@ class ExperimentRunner:
             )
         print("\n#######################################")
         print("Real World Experiment done!!")
+        print("#######################################\n")
+
+    def run_benchmark(self, **kwargs):
+        '''
+        This function runs the benchmark experiments on the given model.
+
+        ARGUMENTS:
+        ----------
+            model: model name (str)
+            api_key: openai api key for the evaluator (str)
+
+        RETURNS:
+        --------
+            None
+
+        ACTIONS:
+        --------
+            Runs the experiment on the given model and saves the results in the result file.
+            {
+                "hand-crafted": {
+                    "CWE-X": {
+                        "file": {
+                            "content": "response",
+                            "pred": "yes/no/n/a",
+                            "reason": "reason/n/a",
+                            "rouge": "rouge score",
+                            "cos_sim": "cosine similarity score",
+                            "gpt_eval": "yes/no"
+                        },
+                        ...
+                    },
+                    ...
+                },
+                "augmented": {
+                    "trivial": {
+                        "A1": {
+                            "CWE-X": {
+                                "file": {
+                                    "content": "response",
+                                    "pred": "yes/no/n/a",
+                                    "reason": "reason/n/a",
+                                    "rouge": "rouge score",
+                                    "cos_sim": "cosine similarity score",
+                                    "gpt_eval": "yes/no"
+                                },
+                                ...
+                            },
+                            ...
+                        },
+                        ...
+                    },
+                    "non-trivial": {
+                        "A1": {
+                            "0": {
+                                "CWE-X": {
+                                    "file": {
+                                        "content": "response",
+                                        "pred": "yes/no/n/a",
+                                        "reason": "reason/n/a",
+                                        "rouge": "rouge score",
+                                        "cos_sim": "cosine similarity score",
+                                        "gpt_eval": "yes/no"
+                                    },
+                                    ...
+                                },
+                                ...
+                            },
+                            "1": ...
+                        },
+                        ...
+                    }
+                },
+                "real-world": {
+                    "project": {
+                        "cve": {
+                            "file": {
+                                "content": "response",
+                                "pred": "yes/no/n/a",
+                                "reason": "reason/n/a",
+                                "rouge": "rouge score",
+                                "cos_sim": "cosine similarity score",
+                                "gpt_eval": "yes/no"
+                            },
+                            ...
+                        },
+                        ...
+                    },
+                    ...
+                }
+            }
+        '''
+        api_key = kwargs['api_key']
+        model = kwargs['model']
+        dataset_path = os.path.join(os.path.dirname(__file__), '..', 'datasets')
+
+        # set parameters
+        self.gpt_client = OpenAI(api_key=api_key)
+        self.temp = 0.0
+        prompt = 'promptS1'
+
+        # make `results` directory
+        result_path = os.path.join(os.path.dirname(__file__), '..', 'results')
+        os.makedirs(result_path, exist_ok=True)
+
+        # make `results/benchmark` directory
+        benchmark_result_path = os.path.join(result_path, 'benchmark')
+        os.makedirs(benchmark_result_path, exist_ok=True)
+
+        # make `results/benchmark/<model>.json`
+        result_full_path = os.path.join(benchmark_result_path, model + ".json")
+        results = {"hand-crafted": {}, "augmented": {}, "real-world": {}} if os.path.isfile(result_full_path) == False else json.loads(open(result_full_path, "r", encoding='utf-8').read())
+        
+        print("\n#######################################")
+        print("Benchmark Experiment!!")
+        print("#######################################\n")
+
+        try:
+            print("\nRunning experiment for {} using {}".format(model, prompt))
+            print('\n--------------------------------------')
+            print("Running hand-crafted experiment!!")
+            print('--------------------------------------\n')
+            hand_crafted_dataset_path = os.path.join(dataset_path, 'hand-crafted')
+
+            # Run all dirs (cwes)
+            for dir in os.listdir(os.path.join(hand_crafted_dataset_path, 'dataset')):
+                # Check for dir name
+                cwe = dir.lower()
+                if cwe not in self.cwes:
+                    continue
+                
+                print("\nRunning experiment for {}".format(cwe))
+                if cwe not in results['hand-crafted']:
+                    results['hand-crafted'][cwe] = {}
+
+                # Run all files
+                for file in os.listdir(os.path.join(hand_crafted_dataset_path, 'dataset', dir)):
+                    print("\nExperiment for {}".format(file))
+                    if file.endswith(".c") or file.endswith(".py"):
+                        label = 0 if file[0] == 'p' else 1
+
+                        # Check if file exists
+                        if file not in results['hand-crafted'][cwe]:
+                            results['hand-crafted'][cwe][file] = {}
+                        
+                        # Get code
+                        code = open(os.path.join(hand_crafted_dataset_path, 'dataset', dir, file), "r", encoding='utf-8').read()
+
+                        # Run experiment for prompt
+                        if "content" not in results['hand-crafted'][cwe][file]:
+                            response = self.prompts[prompt](cwe=cwe, code=code)
+                            if not response:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['hand-crafted'][cwe][file]["content"] = response
+                            results['hand-crafted'][cwe][file]["label"] = label
+                        print("Response done!!")
+
+                        # Extract info
+                        if "pred" not in results['hand-crafted'][cwe][file] or "reason" not in results['hand-crafted'][cwe][file]:
+                            pred, reason = self.extract_structured_info(cwe=cwe, text=results['hand-crafted'][cwe][file]["content"])
+                            if pred == None or reason == None:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['hand-crafted'][cwe][file]["pred"] = pred
+                            results['hand-crafted'][cwe][file]["reason"] = reason
+                        print("Extraction done!!")
+
+                        # Check if reason is n/a
+                        if results['hand-crafted'][cwe][file]["reason"] == "n/a":
+                            results['hand-crafted'][cwe][file]["rouge"] = None
+                            results['hand-crafted'][cwe][file]["cos_sim"] = None
+                            results['hand-crafted'][cwe][file]["gpt_eval"] = None
+
+                        # Evaluate using ground truth
+                        gt = open(os.path.join(hand_crafted_dataset_path, 'ground-truth', cwe.upper(), file.split(".")[0] + ".txt"), "r", encoding='utf-8').read()
+
+                        # 1) Compute rouge score
+                        if "rouge" not in results['hand-crafted'][cwe][file]:
+                            rouge_score = self.rouge(reason=results['hand-crafted'][cwe][file]["reason"], ground_truth=gt)
+                            results['hand-crafted'][cwe][file]["rouge"] = rouge_score
+                        print("Rouge done!!")
+
+                        # 2) Compute cosine similarity
+                        if "cos_sim" not in results['hand-crafted'][cwe][file]:
+                            gt_emb = None
+                            with open(os.path.join(hand_crafted_dataset_path, 'embeddings', cwe.upper(), file.split(".")[0]), "rb") as f:
+                                gt_emb = pickle.load(f)
+                            cos_sim = self.cos_similarity(reason=results['hand-crafted'][cwe][file]["reason"], ground_truth=gt_emb)
+                            if cos_sim == None:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['hand-crafted'][cwe][file]["cos_sim"] = cos_sim
+                        print("Cosine similarity done!!")
+
+                        # 3) Compute gpt evaluation
+                        if "gpt_eval" not in results['hand-crafted'][cwe][file]:
+                            gpt_eval = self.gpt_structured_eval(reason=results['hand-crafted'][cwe][file]["reason"], ground_truth=gt)
+                            if not gpt_eval:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['hand-crafted'][cwe][file]["gpt_eval"] = gpt_eval
+                        print("GPT evaluation done!!")
+
+            # 2) Trivial Augmented Experiment!!
+            print('\n--------------------------------------')
+            print("Running trivial-augmented experiment!!")
+            print('--------------------------------------\n')
+            scenario = 'trivial'
+            trivial_dataset_path = os.path.join(dataset_path, 'augmented', scenario)
+
+            # Scenarios
+            if scenario not in results['augmented']:
+                results['augmented'][scenario] = {}
+            
+            # Run all dirs (Augmentations)
+            for A in os.listdir(trivial_dataset_path):
+                # Check for dir name
+                if A not in ["A1", "A2", "A3", "A4", "A5", "A6", "A7"]:
+                    continue
+
+                print("\nRunning experiment for {}".format(A))
+                # Check if A exists
+                if A not in results['augmented'][scenario]:
+                    results['augmented'][scenario][A] = {}
+                
+                data_path = os.path.join(trivial_dataset_path, A, 'dataset')
+                gt_path = os.path.join(trivial_dataset_path, A, 'ground_truth')
+                emb_path = os.path.join(trivial_dataset_path, A, 'embeddings')
+
+                for cwe in os.listdir(data_path):
+                    cwe = cwe.lower()
+                    # Check for dir name
+                    if cwe not in self.cwes:
+                        continue
+
+                    print("\nRunning experiment for {}".format(cwe))
+                    # Check if cwe exists
+                    if cwe not in results['augmented'][scenario][A]:
+                        results['augmented'][scenario][A][cwe] = {}
+
+                    # Run all files
+                    for file in os.listdir(os.path.join(data_path, cwe.upper())):
+                        print("\nExperiment for {}".format(file))
+                        if file.endswith(".c") or file.endswith(".py"):
+                            # Put A0 in the beginning
+                            if 'A0' not in results['augmented'][scenario]:
+                                results['augmented'][scenario]['A0'] = {}
+                            if cwe not in results['augmented'][scenario]['A0']:
+                                results['augmented'][scenario]['A0'][cwe] = {}
+                            if file not in results['augmented'][scenario]['A0'][cwe]:
+                                results['augmented'][scenario]['A0'][cwe][file] = results['hand-crafted'][cwe][file]
+
+                            label = 0 if file[0] == 'p' else 1
+
+                            # Check if file exists
+                            if file not in results['augmented'][scenario][A][cwe]:
+                                results['augmented'][scenario][A][cwe][file] = {}
+                            
+                            # Get code
+                            code = open(os.path.join(data_path, cwe.upper(), file), "r", encoding='utf-8').read()
+
+                            # Run experiment
+                            if "content" not in results['augmented'][scenario][A][cwe][file]:
+                                response = self.prompts[prompt](cwe=cwe, code=code)
+                                if not response:
+                                    open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                    return
+                                results['augmented'][scenario][A][cwe][file]["content"] = response
+                                results['augmented'][scenario][A][cwe][file]["label"] = label
+                            print("Response done!!")
+
+                            # Extract info
+                            if "pred" not in results['augmented'][scenario][A][cwe][file] or "reason" not in results['augmented'][scenario][A][cwe][file]:
+                                pred, reason = self.extract_structured_info(cwe=cwe, text=results['augmented'][scenario][A][cwe][file]["content"])
+                                if pred == None or reason == None:
+                                    open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                    return
+                                results['augmented'][scenario][A][cwe][file]["pred"] = pred
+                                results['augmented'][scenario][A][cwe][file]["reason"] = reason
+                            print("Extraction done!!")
+
+                            # Check if reason is n/a
+                            if results['augmented'][scenario][A][cwe][file]["reason"] == "n/a":
+                                results['augmented'][scenario][A][cwe][file]["rouge"] = None
+                                results['augmented'][scenario][A][cwe][file]["cos_sim"] = None
+                                results['augmented'][scenario][A][cwe][file]["gpt_eval"] = None
+
+                            # Evaluate using ground truth
+                            gt = open(os.path.join(gt_path, cwe.upper(), file.split(".")[0] + ".txt"), "r").read()
+
+                            # 1) Compute rouge score
+                            if "rouge" not in results['augmented'][scenario][A][cwe][file]:
+                                rouge_score = self.rouge(reason=results['augmented'][scenario][A][cwe][file]["reason"], ground_truth=gt)
+                                results['augmented'][scenario][A][cwe][file]["rouge"] = rouge_score
+                            print("Rouge done!!")
+
+                            # 2) Compute cosine similarity
+                            if "cos_sim" not in results['augmented'][scenario][A][cwe][file]:
+                                gt_emb = None
+                                with open(os.path.join(emb_path, cwe.upper(), file.split(".")[0]), "rb") as f:
+                                    gt_emb = pickle.load(f)
+                                cos_sim = self.cos_similarity(reason=results['augmented'][scenario][A][cwe][file]["reason"], ground_truth=gt_emb)
+                                if cos_sim == None:
+                                    open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                    return
+                                results['augmented'][scenario][A][cwe][file]["cos_sim"] = cos_sim
+                            print("Cosine similarity done!!")
+
+                            # 3) Compute gpt evaluation
+                            if "gpt_eval" not in results['augmented'][scenario][A][cwe][file]:
+                                gpt_eval = self.gpt_structured_eval(reason=results['augmented'][scenario][A][cwe][file]["reason"], ground_truth=gt)
+                                if not gpt_eval:
+                                    open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                    return
+                                results['augmented'][scenario][A][cwe][file]["gpt_eval"] = gpt_eval
+                            print("GPT evaluation done!!")
+
+            # 3) Non-Trivial Augmented Experiment!!
+            print('\n--------------------------------------')
+            print("Running non-trivial-augmented experiment!!")
+            print('--------------------------------------\n')
+            scenario = 'non-trivial'
+            non_trivial_dataset_path = os.path.join(dataset_path, 'augmented', scenario)
+            aug_test = {
+                "A1": {
+                    "cwe-787": "cwe-787",
+                    "cwe-416": "cwe-416"
+                },
+                "A2": {
+                    "cwe-787": "cwe-787",
+                    "cwe-416": "cwe-416",
+                    "cwe-79": "cwe-79",
+                    "cwe-89": "cwe-89"
+                },
+                "A3": {
+                    "cwe-787": "cwe-787",
+                    "cwe-416": "cwe-416",
+                    "cwe-79": "cwe-79",
+                    "cwe-89": "cwe-89"
+                },
+                "A4": {
+                    "cwe-787": "cwe-787",
+                    "cwe-416": "cwe-416"
+                },
+                "A5": {
+                    "cwe-787": "cwe-787",
+                    "cwe-79": "cwe-79",
+                    "cwe-22": "cwe-22"
+                },
+                "A6": {
+                    "cwe-787": "cwe-787",
+                    "cwe-22": "cwe-22",
+                    "cwe-77": "cwe-77"
+                }
+            }
+
+            # Scenarios
+            if scenario not in results['augmented']:
+                results['augmented'][scenario] = {}
+            
+            # Run all dirs (Augmentations)
+            for A in os.listdir(non_trivial_dataset_path):
+                # Check for dir name
+                if A not in ["A1", "A2", "A3", "A4", "A5", "A6"]:
+                    continue
+
+                print("\nRunning experiment for {}".format(A))
+                # Check if A exists
+                if A not in results['augmented'][scenario]:
+                    results['augmented'][scenario][A] = {"0": {}, "1": {}}
+
+                # Run for before and after augmentation
+                for t in ['0', '1']:
+                    print("\nRunning experiment for {}".format(t))
+                    data_path = os.path.join(non_trivial_dataset_path, A, A + '_' + t, 'dataset')
+                    gt_path = os.path.join(non_trivial_dataset_path, A, A + '_' + t, 'ground-truth')
+                    emb_path = os.path.join(non_trivial_dataset_path, A, A + '_' + t, 'embeddings')
+
+                    # Run all dirs (cwes)
+                    for cwe in os.listdir(data_path):
+                        cwe = cwe.lower()
+                        # Check for dir name
+                        if cwe not in self.cwes:
+                            continue
+
+                        print("\nRunning experiment for {}".format(cwe))
+                        # Check if cwe exists
+                        if cwe not in results['augmented'][scenario][A][t]:
+                            results['augmented'][scenario][A][t][cwe] = {}
+
+                        # Run all files
+                        for file in os.listdir(os.path.join(data_path, cwe.upper())):
+                            print("\nExperiment for {}".format(file))
+                            if file.endswith(".c") or file.endswith(".py"):
+                                label = 0 if file[0] == 'p' else 1
+
+                                # Check if file exists
+                                if file not in results['augmented'][scenario][A][t][cwe]:
+                                    results['augmented'][scenario][A][t][cwe][file] = {}
+                                
+                                # Get code
+                                code = open(os.path.join(data_path, cwe.upper(), file), "r", encoding='utf-8').read()
+
+                                # Run experiment
+                                if "content" not in results['augmented'][scenario][A][t][cwe][file]:
+                                    response = self.prompts[prompt](cwe=aug_test[A][cwe], code=code)
+                                    if not response:
+                                        open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                        return
+                                    results['augmented'][scenario][A][t][cwe][file]["content"] = response
+                                    results['augmented'][scenario][A][t][cwe][file]["label"] = label
+                                print("Response done!!")
+
+                                # Extract info
+                                if "pred" not in results['augmented'][scenario][A][t][cwe][file] or "reason" not in results['augmented'][scenario][A][t][cwe][file]:
+                                    pred, reason = self.extract_structured_info(cwe=cwe, text=results['augmented'][scenario][A][t][cwe][file]["content"])
+                                    if pred == None or reason == None:
+                                        open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                        return
+                                    results['augmented'][scenario][A][t][cwe][file]["pred"] = pred
+                                    results['augmented'][scenario][A][t][cwe][file]["reason"] = reason
+                                print("Extraction done!!")
+
+                                # Check if reason is n/a
+                                if results['augmented'][scenario][A][t][cwe][file]["reason"] == "n/a":
+                                    results['augmented'][scenario][A][t][cwe][file]["rouge"] = None
+                                    results['augmented'][scenario][A][t][cwe][file]["cos_sim"] = None
+                                    results['augmented'][scenario][A][t][cwe][file]["gpt_eval"] = None
+
+                                # Evaluate using ground truth
+                                gt = open(os.path.join(gt_path, cwe.upper(), file.split(".")[0] + ".txt"), "r", encoding='utf-8').read()
+
+                                # 1) Compute rouge score
+                                if "rouge" not in results['augmented'][scenario][A][t][cwe][file]:
+                                    rouge_score = self.rouge(
+                                        reason=results['augmented'][scenario][A][t][cwe][file]["reason"], 
+                                        ground_truth=gt
+                                    )
+                                    results['augmented'][scenario][A][t][cwe][file]["rouge"] = rouge_score
+                                print("Rouge done!!")
+
+                                # 2) Compute cosine similarity
+                                if "cos_sim" not in results['augmented'][scenario][A][t][cwe][file]:
+                                    gt_emb = None
+                                    with open(os.path.join(emb_path, cwe.upper(), file.split(".")[0]), "rb") as f:
+                                        gt_emb = pickle.load(f)
+                                    cos_sim = self.cos_similarity(
+                                        reason=results['augmented'][scenario][A][t][cwe][file]["reason"], 
+                                        ground_truth=gt_emb
+                                    )
+                                    if cos_sim == None:
+                                        open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                        return
+                                    results['augmented'][scenario][A][t][cwe][file]["cos_sim"] = cos_sim
+                                print("Cosine similarity done!!")
+
+                                # 3) Compute gpt evaluation
+                                if "gpt_eval" not in results['augmented'][scenario][A][t][cwe][file]:
+                                    gpt_eval = self.gpt_structured_eval(
+                                        reason=results['augmented'][scenario][A][t][cwe][file]["reason"], 
+                                        ground_truth=gt
+                                    )
+                                    if not gpt_eval:
+                                        open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                        return
+                                    results['augmented'][scenario][A][t][cwe][file]["gpt_eval"] = gpt_eval
+                                print("GPT evaluation done!!")
+
+            # 4) Real World Experiment!!
+            print('\n--------------------------------------')
+            print("Running real-world experiment!!")
+            print('--------------------------------------\n')
+            real_world_dataset_path = os.path.join(dataset_path, 'real-world')
+            cve_details = json.loads(open(os.path.join(real_world_dataset_path, 'cve_details.json'), "r", encoding='utf-8').read())
+
+            # Run for all projects
+            for project in os.listdir(real_world_dataset_path):
+                if project == 'cve_details.json' or project == 'README.md':
+                    continue
+                print("\nRunning experiment for {}".format(project))
+                # Check if project exists
+                if project not in results['real-world']:
+                    results['real-world'][project] = {}
+                
+                project_path = os.path.join(real_world_dataset_path, project)
+                # Run for all CVEs
+                for cve in os.listdir(project_path):
+                    print("\nExperiment for {}".format(cve))
+                    # Check if cve exists
+                    if cve not in results['real-world'][project]:
+                        results['real-world'][project][cve] = {}
+                    
+                    cve_path = os.path.join(project_path, cve)
+                    # Run for both 'vuln' and 'patch' files
+                    for file in ['vuln', 'patch']:
+                        print("\nExperiment for {}".format(file))
+                        # Check if file exists
+                        if file not in results['real-world'][project][cve]:
+                            results['real-world'][project][cve][file] = {}
+                        
+                        file_path = os.path.join(cve_path, file + '.c')
+                        gt_path = os.path.join(cve_path, file + '.txt')
+                        emb_path = os.path.join(cve_path, file)
+
+                        # Get code
+                        code = open(file_path, "r", encoding='utf-8').read()
+
+                        # Run experiment
+                        if "content" not in results['real-world'][project][cve][file]:
+                            response = self.prompts[prompt](cwe=cve_details[project.lower()][cve]["cwe"], code=code)
+                            if not response:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['real-world'][project][cve][file]["content"] = response
+                        print("Response done!!")
+
+                        # Extract info
+                        if "pred" not in results['real-world'][project][cve][file] or "reason" not in results['real-world'][project][cve][file]:
+                            pred, reason = self.extract_structured_info(cwe=cve_details[project.lower()][cve]["cwe"], text=results['real-world'][project][cve][file]["content"])
+                            if pred == None or reason == None:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['real-world'][project][cve][file]["pred"] = pred
+                            results['real-world'][project][cve][file]["reason"] = reason
+                        print("Extraction done!!")
+
+                        # Check if reason is n/a
+                        if results['real-world'][project][cve][file]["reason"] == "n/a":
+                            results['real-world'][project][cve][file]["rouge"] = None
+                            results['real-world'][project][cve][file]["cos_sim"] = None
+                            results['real-world'][project][cve][file]["gpt_eval"] = None
+
+                        # Evaluate using ground truth
+                        gt = open(gt_path, "r", encoding='utf-8').read()
+
+                        # 1) Compute rouge score
+                        if "rouge" not in results['real-world'][project][cve][file]:
+                            rouge_score = self.rouge(
+                                reason=results['real-world'][project][cve][file]["reason"], 
+                                ground_truth=gt
+                            )
+                            results['real-world'][project][cve][file]["rouge"] = rouge_score
+                        print("Rouge done!!")
+
+                        # 2) Compute cosine similarity
+                        if "cos_sim" not in results['real-world'][project][cve][file]:
+                            gt_emb = None
+                            with open(emb_path, "rb") as f:
+                                gt_emb = pickle.load(f)
+                            cos_sim = self.cos_similarity(
+                                reason=results['real-world'][project][cve][file]["reason"], 
+                                ground_truth=gt_emb
+                            )
+                            if cos_sim == None:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['real-world'][project][cve][file]["cos_sim"] = cos_sim
+                        print("Cosine similarity done!!")
+
+                        # 3) Compute gpt evaluation
+                        if "gpt_eval" not in results['real-world'][project][cve][file]:
+                            gpt_eval = self.gpt_structured_eval(
+                                reason=results['real-world'][project][cve][file]["reason"], 
+                                ground_truth=gt
+                            )
+                            if not gpt_eval:
+                                open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+                                return
+                            results['real-world'][project][cve][file]["gpt_eval"] = gpt_eval
+                        print("GPT evaluation done!!")
+        finally:
+            # Save results
+            open(result_full_path, "w").write(json.dumps(results, indent=4, sort_keys=True))
+
+        print("\n#######################################")
+        print("Benchmark Experiment Done!!")
         print("#######################################\n")
